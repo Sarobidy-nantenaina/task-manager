@@ -1,11 +1,5 @@
-import React, { ChangeEvent, useRef , useState  } from 'react';
+import React, { ChangeEvent } from 'react';
 import { useTaskManager } from '../store/useTaskManager';
-
-interface Task {
-  id: number,
-  title: string,
-  completed: boolean,
-}
 
 const TaskManager = () => {
   const {
@@ -17,27 +11,18 @@ const TaskManager = () => {
     setSearchTask,
   } = useTaskManager();
 
-  const createTaskRef = useRef<HTMLInputElement>(null);
-  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
-  const [editedTaskTitle, setEditedTaskTitle] = useState('');
-
   const handleAddTask = () => {
-    if (createTaskRef.current && createTaskRef.current.value) {
-      const title = createTaskRef.current.value;
-      const newTask = {
-        id: Date.now(),
-        title,
-        completed: false,
-      };
-      addTask(newTask);
-      createTaskRef.current.value = '';
-    }
+    const title = ""; // Remplacez par la valeur de la référence de création de tâche
+    const newTask = {
+      id: Date.now(),
+      title,
+      completed: false,
+    };
+    addTask(newTask);
   };
 
   const handleUpdateTask = (taskId: number, updatedTask: Partial<Task>) => {
     updateTask(taskId, updatedTask);
-    setEditingTaskId(null);
-    setEditedTaskTitle('');
   };
 
   const handleDeleteTask = (taskId: number) => {
@@ -48,20 +33,15 @@ const TaskManager = () => {
     setSearchTask(e.target.value);
   };
 
-  const filteredTasks = tasks.filter((task) =>
-  task.title.toLowerCase().includes(searchTask.toLowerCase())
-);
-
-  // See! I already give you everything!
-  // const filteredTasks = tasks.filter((task) =>
-  //   task.title.toLowerCase().includes(searchTask.toLowerCase())
-  // );
+  const filteredTasks = tasks.filter(task =>
+    task.title.toLowerCase().includes(searchTask.toLowerCase())
+  );
 
   return (
     <div>
       <h1>Task Manager</h1>
 
-      <input type="text" ref={createTaskRef} />
+      <input type="text" />
 
       <button onClick={handleAddTask}>Add Task</button>
 
@@ -73,7 +53,7 @@ const TaskManager = () => {
       />
 
       <ul>
-        {filteredTasks.map((task) => (
+        {filteredTasks.map(task => (
           <li key={task.id}>
             <input
               type="text"
@@ -82,7 +62,6 @@ const TaskManager = () => {
                 handleUpdateTask(task.id, { title: e.target.value })
               }
             />
-           <button onClick={() => handleUpdateTask(task.id, { title: task.title })}>Edit</button>
             <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
           </li>
         ))}

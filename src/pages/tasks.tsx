@@ -1,10 +1,11 @@
-import React, { ChangeEvent, useRef , useState  } from 'react';
+import React, { ChangeEvent, useRef } from 'react';
 import { useTaskManager } from '../store/useTaskManager';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 interface Task {
-  id: number,
-  title: string,
-  completed: boolean,
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
 const TaskManager = () => {
@@ -18,13 +19,13 @@ const TaskManager = () => {
   } = useTaskManager();
 
   const createTaskRef = useRef<HTMLInputElement>(null);
-  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
-  const [editedTaskTitle, setEditedTaskTitle] = useState('');
+  const [editingTaskId, setEditingTaskId] = useLocalStorage<number | null>('editingTaskId', null);
+  const [editedTaskTitle, setEditedTaskTitle] = useLocalStorage<string>('editedTaskTitle', '');
 
   const handleAddTask = () => {
     if (createTaskRef.current && createTaskRef.current.value) {
       const title = createTaskRef.current.value;
-      const newTask = {
+      const newTask: Task = {
         id: Date.now(),
         title,
         completed: false,
@@ -49,13 +50,8 @@ const TaskManager = () => {
   };
 
   const filteredTasks = tasks.filter((task) =>
-  task.title.toLowerCase().includes(searchTask.toLowerCase())
-);
-
-  // See! I already give you everything!
-  // const filteredTasks = tasks.filter((task) =>
-  //   task.title.toLowerCase().includes(searchTask.toLowerCase())
-  // );
+    task.title.toLowerCase().includes(searchTask.toLowerCase())
+  );
 
   return (
     <div>
@@ -82,7 +78,7 @@ const TaskManager = () => {
                 handleUpdateTask(task.id, { title: e.target.value })
               }
             />
-           <button onClick={() => handleUpdateTask(task.id, { title: task.title })}>Edit</button>
+            <button onClick={() => handleUpdateTask(task.id, { title: task.title })}>Edit</button>
             <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
           </li>
         ))}
